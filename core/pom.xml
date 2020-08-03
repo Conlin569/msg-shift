@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>msg-shift</artifactId>
+        <groupId>com.frxs.msg</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>core</artifactId>
+    <version>2.0.4-SNAPSHOT</version>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.frxs.msg</groupId>
+            <artifactId>msg-shift-api</artifactId>
+            <version>${module.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <!-- slf4j-api -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <!-- log4j -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <!--el-->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>8.5.31</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.frxs.framework</groupId>
+            <artifactId>frxsframework-data</artifactId>
+        </dependency>
+        <!-- mapstructs -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Dubbo Spring Boot Starter -->
+
+        <!-- dubbo -->
+        <!-- Dubbo Config Start -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+        </dependency>
+        <!-- Dubbo Config End -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!--trace2.0 -->
+        <dependency>
+            <groupId>com.frxs.foundation.tracking</groupId>
+            <artifactId>tracking-tracex-component-standard</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Mandatory dependencies for using Spock -->
+        <!-- 使用Spock必须的依赖 -->
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>1.3-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Optional dependencies for using Spock -->
+        <!-- 选择性使用的Spock相关依赖 -->
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
+            <version>1.3-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <!-- use a specific Groovy version rather than the one specified by spock-core -->
+            <!-- 不使用Spock-core中定义的Groovy版本，而是自己定义 -->
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.all.version}</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- enables mocking of classes (in addition to interfaces) -->
+            <!-- mock 接口和类时要用 -->
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte.buddy.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- enables mocking of classes without default constructor (together with CGLIB) -->
+            <!-- mock 类要用 -->
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>${objenesis.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- only required if Hamcrest matchers are used -->
+            <!-- Hamcrest 是一个用于编写匹配对象的框架，如果用到了Hamcrest matchers，需要加这个依赖 -->
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>${hamcrest.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Dependencies used by examples in this project (not required for using Spock) -->
+        <!--Test-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+            <version>4.2.0-frxs</version>
+        </dependency>
+        <dependency>
+            <groupId>com.frxs.msg.user</groupId>
+            <artifactId>msg-user-api</artifactId>
+            <version>2.0.3-RC</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>msg-shift</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <fromFile>target/msg-shift.jar</fromFile>
+                    <url>scp://root:c11nSTRONG@172.21.192.61/home/msg-shift</url>
+                    <commands>
+                        <!-- 重启Tomcat -->
+                        <command><![CDATA[cd /home/msg-shift && nohup sh ./start.sh restart > ./nohup.out 2>&1 &]]></command>
+                    </commands>
+                    <displayCommandOutputs>true</displayCommandOutputs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.frxs.msg.shift.Application</mainClass>
+                    <executable>true</executable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中 -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Mandatory plugins for using Spock -->
+            <!--使用Spock的强制性插件 -->
+<!--            <plugin>-->
+<!--                &lt;!&ndash; The gmavenplus plugin is used to compile Groovy code. To learn more about this plugin,visit https://github.com/groovy/GMavenPlus/wiki &ndash;&gt;-->
+<!--                &lt;!&ndash; 这个 gmavenplus 插件是用于编译Groovy代码的 . 想获取更多此插件相关信息,visit https://github.com/groovy/GMavenPlus/wiki &ndash;&gt;-->
+<!--                <groupId>org.codehaus.gmavenplus</groupId>-->
+<!--                <artifactId>gmavenplus-plugin</artifactId>-->
+<!--                <version>1.6</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--&lt;!&ndash;                            <goal>compile</goal>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <goal>compileTests</goal>&ndash;&gt;-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+            <!-- Optional plugins for using Spock -->
+            <!-- 选择性使用的Spock相关插件-->
+            <!-- Only required if names of spec classes don't match default Surefire patterns (`*Test` etc.) -->
+            <!--只有当测试类不匹配默认的 Surefire patterns (`*Test` 等等.)-->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <useFile>false</useFile>
+<!--                    <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>-->
+                    <includes>
+                        <include>**/*Spec.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
+
+    </build>
+</project>

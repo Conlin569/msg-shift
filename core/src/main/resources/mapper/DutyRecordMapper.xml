@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.frxs.msg.shift.dal.mapper.DutyRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.frxs.msg.shift.dal.entity.DutyRecord">
+        <id column="id" property="id"/>
+        <result column="tmCreate" property="tmCreate"/>
+        <result column="tmSmp" property="tmSmp"/>
+        <result column="departmentId" property="departmentId"/>
+        <result column="departmentName" property="departmentName"/>
+        <result column="employeeId" property="employeeId"/>
+        <result column="employeeName" property="employeeName"/>
+        <result column="dutyDate" property="dutyDate"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <select id="selectByDepartmentId"
+            resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
+        select
+        *
+        from t_duty_record
+        where departmentId = #{departmentId} and status = 'NORMAL'
+        order by dutyDate desc
+    </select>
+
+    <select id="selectByDeptIdAndDutyDateAndEmpId"
+            resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
+        select
+        *
+        from t_duty_record
+        where departmentId = #{param.departmentId}
+        and dutyDate = #{param.dutyDate}
+        and employeeId = #{param.employeeId}
+    </select>
+
+    <select id="selectRecentByDepartmentId" resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
+        select
+        *
+        from t_duty_record
+        where departmentId = #{departmentId}
+        and status = 'NORMAL'
+        order by dutyDate desc
+        limit 1
+    </select>
+
+    <select id="selectTodayOnDuty" resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
+        select
+        *
+        from t_duty_record
+        where departmentId = #{departmentId}
+        and dutyDate = #{date}
+        limit 1
+    </select>
+</mapper>

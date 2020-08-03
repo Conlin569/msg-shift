@@ -1,0 +1,58 @@
+@startuml
+autonumber
+hide footbox
+title **pick**
+
+participant "客户端" as client
+participant "值班服务" as shift
+database "db" as db
+
+activate client
+client -> shift : 查询第n次第值班人员PickRequest(部门id,第n次,值班第周期)
+activate shift
+shift -> shift : 参数校验 : 判断部门是否存在, 天数等数字是否为负数等
+shift -> db : 查询该部门是否有值班记录queryDutyRecord
+activate db
+db --> shift : dutyRecord
+deactivate db
+alt dutyRecord == null
+    shift ->db : 查询该部门的第一位员工queryFirstByDepartmentId(部门id)
+    activate db
+    shift ->db : 保存值班记录saveDutyRecord(部门信息,员工信息,值班日期)
+    deactivate db
+    loop n次
+        shift -> db : 查询该部门最近的一条值班记录(时间倒序取第一条)queryRecent(部门id)
+        activate db
+        db --> shift : dutyRecord
+        shift -> db : 根据该值班记录查询该员工query(员工id)
+        shift -> db : 根据该员工选该员工的下一个员工(员工id)
+        db --> shift : employee
+        shift -> db : 保存值班记录saveDutyRecord(部门信息,employee,值班日期/上次的值班日期+值班周期)
+        deactivate db
+    end
+    activate db
+    shift --> client : 返回循环的最后一个员工
+else
+    shift -> db : 查询本次日期的值班记录(小于等于当前时间)queryNow(部门id,当前时间)
+    activate db
+    db --> shift : dutyRecord
+    shift -> db : 查询员工queryById(员工id)
+    db --> shift : employee
+    loop n次
+        shift -> db : 查询下一次的值班记录queryNextByDateAndDepartmentId(日期,部门id)
+        db --> shift : dutyRecord
+        alt dutyRecord == null
+            shift -> db : 查询该部门最近的一条值班记录(时间倒序取第一条)queryRecent(部门id)
+            db --> shift : dutyRecord
+            shift -> db : 根据该值班记录查询该员工query(员工id)
+            shift -> db : 根据该员工选该员工的下一个员工(员工id)
+            db --> shift : employee
+            shift -> db : 保存值班记录saveDutyRecord(部门信息,employee,值班日期/上次的值班日期+值班周期)
+        end
+    end
+    deactivate db
+    shift --> client : 返回循环的最后一个员工
+end
+deactivate shift
+deactivate client
+@enduml

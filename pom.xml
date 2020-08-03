@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.frxs.msg</groupId>
+    <artifactId>msg-shift</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <modules>
+        <module>core</module>
+    </modules>
+
+    <properties>
+        <!-- 编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.language>java</sonar.language>
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/../core/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+        <lombok.version>1.16.20</lombok.version>
+        <frxsframework.version>1.0.8</frxsframework.version>
+        <dubbo.version>2.7.6</dubbo.version>
+        <grpc.version>1.19.0</grpc.version>
+
+        <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
+        <!-- log4j 日志 -->
+        <log4j2.version>2.11.0</log4j2.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <!-- 三方框架 -->
+        <fastjson.version>1.2.67</fastjson.version>
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <httpclient.version>4.5.3</httpclient.version>
+        <httpcore.version>4.4.9</httpcore.version>
+        <jackson.annotation.version>2.9.0</jackson.annotation.version>
+        <hibernate.validator.version>6.0.7.Final</hibernate.validator.version>
+        <freemarker.version>2.3.28</freemarker.version>
+        <shiro.version>1.4.0</shiro.version>
+        <mybatis-plus.version>2.3</mybatis-plus.version>
+        <!-- <tracking-trace.version>1.0.6.1-RELEASE</tracking-trace.version> -->
+        <tracking-trace.version>2.0.0-RELEASE</tracking-trace.version>
+        <!--SMS -->
+        <smsmontnets.version>1.1</smsmontnets.version>
+        <!--JPush -->
+        <jpush.version>3.4.3</jpush.version>
+        <ocean.gateway.version>2.2.3-RELEASE</ocean.gateway.version>
+        <xsportal-client.version>0.2.1-SNAPSHOT</xsportal-client.version>
+
+        <!--user.service.api的两个替代接口 -->
+        <member-api.version>1.9.0-RELEASE</member-api.version>
+        <access-support-api.version>1.9.0-RELEASE</access-support-api.version>
+        <otter.version>4.2.18</otter.version>
+
+        <api.module.version>2.0.3-SNAPSHOT</api.module.version>
+        <link.server.version>2.0.1-SNAPSHOT</link.server.version>
+        <sentinel.extension.vsersion>1.1.0-RELEASE</sentinel.extension.vsersion>
+
+        <druid.version>1.1.10</druid.version>
+
+        <!--用户线-->
+        <user-api.version>1.9.4-RELEASE</user-api.version>
+        <!--httpclient-->
+        <apache.httpclient.version>4.5.2</apache.httpclient.version>
+        <!--spock测试框架-->
+        <spock.version>1.3-groovy-2.4</spock.version>
+        <groovy.all.version>2.4.12</groovy.all.version>
+        <byte.buddy.version>1.9.3</byte.buddy.version>
+        <objenesis.version>2.6</objenesis.version>
+        <hamcrest.core.version>1.3</hamcrest.core.version>
+        <h2database.version>1.4.197</h2database.version>
+        <aliyun-oss.version>3.10.2</aliyun-oss.version>
+    </properties>
+
+    <profiles>
+        <!-- 开发环境 -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <module.version>2.0.4-SNAPSHOT</module.version>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- 测试环境 -->
+        <profile>
+            <id>qa</id>
+            <properties>
+                <module.version>2.0.4-RC</module.version>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>maven-release-candidate</id>
+                    <name>Frxs Nexus Release Candidate Repository</name>
+                    <url>http://nexus.frxs.cn/repository/maven-release-candidate/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+
+        <!-- 生产环境 -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <module.version>2.0.4-RELEASE</module.version>
+            </properties>
+        </profile>
+    </profiles>
+    <!-- repository -->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>Nexus Local Repository</name>
+            <url>http://nexus.frxs.cn/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <!-- pluginRepository -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus-plugin</id>
+            <name>Nexus Plugin Repository</name>
+            <url>http://nexus.frxs.cn/repository/maven-public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- dependencyManagement -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${apache.httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.frxs.auth</groupId>
+                <artifactId>auth-service-api</artifactId>
+                <version>${user-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.otter</groupId>
+                <artifactId>shared.etl</artifactId>
+                <version>${otter.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.frxs.framework</groupId>
+                <artifactId>frxsframework-service-bom</artifactId>
+                <version>${frxsframework.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!-- spring-boot -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring-boot.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                        <groupId>org.springframework.boot</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- slf4j-api -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- log4j -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- mapstructs -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-jdk8</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <scope>provided</scope>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.frxs.msg.user</groupId>
+                <artifactId>msg-user-api</artifactId>
+                <version>${api.module.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-support</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!--trace2.0 -->
+            <dependency>
+                <groupId>com.frxs.foundation.tracking</groupId>
+                <artifactId>tracking-tracex-component-standard</artifactId>
+                <version>${tracking-trace.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.frxs.foundation.tracking</groupId>
+                        <artifactId>tracking-tracex-component-dubbo</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Dubbo Config Start -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.11</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+                <version>4.0.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>4.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>4.1.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- Dubbo Config End -->
+            <!-- dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <!-- Dubbo Spring Boot Starter -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>2.7.5</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>dubbo</artifactId>
+                        <groupId>org.apache.dubbo</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.11</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>4.0.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- jsonrpc4j -->
+            <dependency>
+                <groupId>com.github.briandilley.jsonrpc4j</groupId>
+                <artifactId>jsonrpc4j</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty-shaded</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>4.2.0-frxs</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>netty-all</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- PDF 渲染 -->
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf-itext5</artifactId>
+                <version>9.1.18</version>
+            </dependency>
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itextpdf</artifactId>
+                <version>5.5.14-xsyx</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.montnets.mwgate</groupId>
+                <artifactId>JavaSmsSdk</artifactId>
+                <version>${smsmontnets.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.xsyxsc.devops</groupId>
+                <artifactId>xsportal-qs-client</artifactId>
+                <version>${xsportal-client.version}</version>
+            </dependency>
+
+            <!-- caffeine cache -->
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>2.6.2</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-oss.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.frxs.foundation.sentinel</groupId>
+                <artifactId>sentinel-extension</artifactId>
+                <version>${sentinel.extension.vsersion}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.ctrip.framework.apollo</groupId>
+                        <artifactId>apollo-client</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- dependency -->
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.7.0</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                        <testIncludes>
+                            <testInclude>none</testInclude>
+                        </testIncludes>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jdeps-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jdkinternals</goal>
+                                <goal>test-jdkinternals</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <attach>true</attach>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20.1</version>
+                    <configuration>
+                        <argLine>-Xmx512m -XX:PermSize=128m
+                            -XX:MaxPermSize=128m</argLine>
+                        <testFailureIgnore>true</testFailureIgnore>
+                        <includes>
+                            <include>**/*Test*.java</include>
+                        </includes>
+                        <excludes />
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <configuration>
+                        <executable>true</executable>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <fromFile>communication-service-impl/target/communication-core.jar</fromFile>
+                    <url>scp://root:abc123@172.16.8.207/home/communication-core</url>
+                    <commands>
+                        <!-- 重启Tomcat -->
+                        <command>
+                            <![CDATA[cd /home/communication-core && nohup sh ./start.sh restart > ./nohup.out 2>&1 &]]></command>
+                    </commands>
+                    <displayCommandOutputs>true</displayCommandOutputs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+        <defaultGoal>compile</defaultGoal>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>maven-releases</id>
+            <name>Frxs Nexus Release Repository</name>
+            <url>http://nexus.frxs.cn/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven-snapshots</id>
+            <name>Frxs Nexus Snapshot Repository</name>
+            <url>http://nexus.frxs.cn/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
