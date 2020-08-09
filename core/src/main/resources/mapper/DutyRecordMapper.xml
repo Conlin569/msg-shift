@@ -44,12 +44,11 @@
         limit 1
     </select>
 
-    <select id="selectTodayOnDuty" resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
+    <select id="selectByDepartmentIdAndDate" resultType="com.frxs.msg.shift.dal.entity.DutyRecord">
         select
         *
         from t_duty_record
         where departmentId = #{departmentId}
         and dutyDate = #{date}
-        limit 1
     </select>
 </mapper>

@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author ouyangzhaobing
@@ -33,9 +31,8 @@ public class DutyRecordServiceImpl implements DutyRecordService {
 
     @Override
     public void save(DutyRecord dutyRecord) {
-        if (Objects.isNull(dutyRecordMapper.selectByDeptIdAndDutyDateAndEmpId(dutyRecord))) {
-            dutyRecordMapper.insert(dutyRecord);
-        }
+        dutyRecordMapper.insert(dutyRecord);
+
     }
 
     @Override
@@ -44,7 +41,7 @@ public class DutyRecordServiceImpl implements DutyRecordService {
     }
 
     @Override
-    public DutyRecord queryTodayOnDuty(Integer departmentId, LocalDate date) {
-        return dutyRecordMapper.selectTodayOnDuty(departmentId, date);
+    public DutyRecord queryByDepartmentIdAndDate(Integer departmentId, LocalDate date) {
+        return dutyRecordMapper.selectByDepartmentIdAndDate(departmentId, date);
     }
 }

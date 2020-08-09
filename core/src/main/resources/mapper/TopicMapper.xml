@@ -3,5 +3,9 @@
 <mapper namespace="com.frxs.msg.shift.dal.mapper.TopicMapper">
 
 
-
+    <select id="selectByDepartmentId" resultType="com.frxs.msg.shift.dal.entity.Topic">
+        select *
+        from t_topic
+        where departmentId = #{departmentId}
+    </select>
 </mapper>

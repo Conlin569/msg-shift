@@ -1,6 +1,7 @@
 @startuml
 autonumber
 hide footbox
+skinparam handwritten true
 title **pick**
 
 participant "客户端" as client

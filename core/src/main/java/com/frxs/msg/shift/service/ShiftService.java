@@ -5,6 +5,7 @@
 package com.frxs.msg.shift.service;
 
 import com.frxs.msg.shift.api.domain.EmployeeDto;
+import com.frxs.msg.shift.api.domain.PickRequest;
 
 /**
  * @author ouyangzhaobing
@@ -13,12 +14,9 @@ import com.frxs.msg.shift.api.domain.EmployeeDto;
 public interface ShiftService {
 
     /**
-     * 查询未来n天的某部门值班人
-     *
-     * @param departmentId
-     * @param times
-     * @param cycle
+     * 查询第n次该部门第值班人员
+     * @param pickRequest
      * @return
      */
-    EmployeeDto queryOnDuty(Integer departmentId, Integer times, Integer cycle);
+    EmployeeDto queryNthTimeOnDuty(PickRequest pickRequest);
 }

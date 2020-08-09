@@ -7,22 +7,16 @@ package com.frxs.msg.shift.facade.impl;
 import com.frxs.msg.shift.api.domain.EmployeeDto;
 import com.frxs.msg.shift.api.domain.PickRequest;
 import com.frxs.msg.shift.api.exception.BizException;
+import com.frxs.msg.shift.api.exception.enums.ErrorCodeDetailEnum;
 import com.frxs.msg.shift.api.facade.ShiftFacade;
 import com.frxs.msg.shift.api.result.ResultTO;
 import com.frxs.msg.shift.api.result.ResultUtil;
-import com.frxs.msg.shift.chain.ShiftChain;
-import com.frxs.msg.shift.manager.AbstractShift;
-import com.frxs.msg.shift.manager.ShiftManager;
-import com.frxs.msg.shift.service.DepartmentService;
 import com.frxs.msg.shift.service.ShiftService;
 import org.apache.dubbo.config.annotation.Service;
 
 import javax.annotation.Resource;
-
-import java.util.List;
 import java.util.Objects;
 
-import static com.frxs.msg.shift.api.exception.enums.ErrorCodeDetailEnum.PARAM_ERROR;
 
 /**
  * @author ouyangzhaobing
@@ -34,36 +28,14 @@ public class ShiftFacadeImpl implements ShiftFacade {
     @Resource
     private ShiftService shiftService;
 
-    @Resource
-    private DepartmentService departmentService;
-
-    @Resource
-    private ShiftChain shiftChain;
-
-    @Resource
-    private AbstractShift<EmployeeDto, PickRequest> abstractShift;
-
     @Override
-    public ResultTO<EmployeeDto> queryOnDuty(Integer departmentId, Integer times, Integer cycle) {
-        if (times < 0) {
-            throw new BizException(PARAM_ERROR, "天数不能小于0！");
+    public ResultTO<EmployeeDto> queryNthTimeOnDuty(PickRequest pickRequest) {
+        if (Objects.isNull(pickRequest) ||
+                Objects.isNull(pickRequest.getDepartmentId()) ||
+                Objects.isNull(pickRequest.getCycle()) ||
+                Objects.isNull(pickRequest.getNextTimes())) {
+            throw new BizException(ErrorCodeDetailEnum.PARAM_ERROR, "参数为空!");
         }
-        if (Objects.isNull(departmentId)) {
-            throw new BizException(PARAM_ERROR, "部门id不能为空！");
-        }
-        if (Objects.isNull(departmentService.queryById(departmentId))) {
-            throw new BizException(PARAM_ERROR, "部门id不存在！");
-        }
-        return ResultUtil.success(shiftService.queryOnDuty(departmentId, times, cycle));
-    }
-
-    @Override
-    public ResultTO<List<EmployeeDto>> pickOnDuty(PickRequest pickRequest) {
-        return ResultUtil.success(shiftChain.execute(pickRequest));
-    }
-
-    @Override
-    public ResultTO<EmployeeDto> pickOne(PickRequest pickRequest) {
-        return ResultUtil.success(abstractShift.generateDutyMan(pickRequest));
+        return ResultUtil.success(shiftService.queryNthTimeOnDuty(pickRequest));
     }
 }

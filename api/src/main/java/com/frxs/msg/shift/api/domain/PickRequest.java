@@ -23,7 +23,7 @@ public class PickRequest implements Serializable {
     /**
      * 第nextTimes次的值班员工
      */
-    private Integer nextTimes;
+    private Long nextTimes;
 
     /**
      * 该部门的值班周期

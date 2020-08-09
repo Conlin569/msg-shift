@@ -5,22 +5,22 @@
 package com.frxs.msg.shift.service.impl;
 
 import com.frxs.msg.shift.api.domain.EmployeeDto;
-import com.frxs.msg.shift.service.DepartmentService;
-import com.frxs.msg.shift.service.DutyRecordService;
-import com.frxs.msg.shift.service.EmployeeService;
-import com.frxs.msg.shift.service.ShiftService;
+import com.frxs.msg.shift.api.domain.PickRequest;
+import com.frxs.msg.shift.api.exception.BizException;
+import com.frxs.msg.shift.api.exception.enums.ErrorCodeDetailEnum;
+import com.frxs.msg.shift.dal.entity.Department;
 import com.frxs.msg.shift.dal.entity.DutyRecord;
 import com.frxs.msg.shift.dal.entity.Employee;
+import com.frxs.msg.shift.dal.entity.Topic;
+import com.frxs.msg.shift.manager.DutyRecordManager;
+import com.frxs.msg.shift.manager.EmployeeManager;
 import com.frxs.msg.shift.mapstruct.EmployeeMapStruct;
+import com.frxs.msg.shift.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,10 +33,6 @@ import java.util.Objects;
 @Service
 public class ShiftServiceImpl implements ShiftService {
 
-    private static final String TIME_FORMATTER = "yyyy-MM-dd";
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     @Resource
     private DepartmentService departmentService;
 
@@ -44,62 +40,80 @@ public class ShiftServiceImpl implements ShiftService {
     private DutyRecordService dutyRecordService;
 
     @Resource
+    private EmployeeManager employeeManager;
+
+    @Resource
+    private DutyRecordManager dutyRecordManager;
+
+    @Resource
     private EmployeeService employeeService;
 
+    @Resource
+    private TopicService topicService;
 
     @Override
-    public EmployeeDto queryOnDuty(Integer departmentId, Integer times, Integer cycle) {
-        EmployeeDto employeeDto = null;
-        for (int i = 0; i <= times; i++) {
-            employeeDto = pickNextOnDuty(departmentId, i);
-            //  保存值班记录
-            saveDutyRecord(employeeDto, i, cycle);
+    public EmployeeDto queryNthTimeOnDuty(PickRequest pickRequest) {
+        //  部门id
+        Integer departmentId = pickRequest.getDepartmentId();
+        //  值班周期
+        Integer cycle = pickRequest.getCycle();
+        //  第n次
+        Long nextTimes = pickRequest.getNextTimes();
+        //  判断部门是否存在
+        Department department = departmentService.queryById(departmentId);
+        if (Objects.isNull(department)) {
+            throw new BizException(ErrorCodeDetailEnum.PARAM_ERROR, "该部门id不存在!");
         }
-        return employeeDto;
-    }
-
-    private EmployeeDto pickNextOnDuty(Integer departmentId, Integer times) {
+        //查询该部门的模版
+        Topic topic = topicService.queryByDepartmentId(departmentId);
+        String topicName = topic.getName();
+        String robotKey = department.getRobotKey();
         //  查询该部门是否有值班记录
         List<DutyRecord> dutyRecords = dutyRecordService.queryByDepartmentId(departmentId);
         if (dutyRecords.isEmpty()) {
-            //  值班记录为空, 从该部门第一个人开始选人
-            Employee employee = employeeService.queryFirstBydDepartmentId(departmentId);
-            return EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
+            //  该部门没有值班人员, 第一次使用
+            Employee employee = employeeManager.getFirstEmployeeByDepartmentId(departmentId);
+            //  保存今天值班记录
+            DutyRecord nowDuty = dutyRecordManager.buildDutyRecord(employee, department, LocalDate.now(), "NORMAL");
+            dutyRecordService.save(nowDuty);
+            for (int i = 0; i < nextTimes; i++) {
+                DutyRecord dutyRecord = dutyRecordService.queryRecentByDepartmentId(departmentId);
+                employee = employeeManager.getNextEmployeeByEmployeeId(departmentId, dutyRecord.getEmployeeId());
+                //  保存第n次值班记录
+                DutyRecord nThDuty = dutyRecordManager.buildDutyRecord(employee, department, LocalDate.now().plusDays(i + 1), "NORMAL");
+                dutyRecordService.save(nThDuty);
+            }
+            EmployeeDto employeeDto = EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
+            employeeDto.setTopicName(topicName);
+            employeeDto.setRobotKey(robotKey);
+            return employeeDto;
         } else {
-            //  有值班记录, 拿最近的一条记录
-            DutyRecord dutyRecord = dutyRecordService.queryRecentByDepartmentId(departmentId);
-            //  如果最近一条值班记录的日期就是今天那么直接返回这个人
-            if (times == 0) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TIME_FORMATTER);
-                String dutyDate = simpleDateFormat.format(dutyRecord.getDutyDate());
-                if (DATE_TIME_FORMATTER.format(LocalDate.now()).equals(dutyDate)) {
-                    return EmployeeMapStruct.MAPPER.toEmployeeDto(employeeService.queryById(dutyRecord.getEmployeeId()));
+            //  查看是否已存在
+            DutyRecord nThDutyRecord = dutyRecordService.queryByDepartmentIdAndDate(departmentId, LocalDate.now().plusDays(nextTimes));
+            //  如果这个记录不存在, 那么就拿最近的一条值班记录，往上叠加就可以了
+            if (Objects.isNull(nThDutyRecord)) {
+                DutyRecord dutyRecord = dutyRecordService.queryRecentByDepartmentId(departmentId);
+                LocalDate recentDate = dutyRecord.getDutyDate();
+                LocalDate targetDate = LocalDate.now().plusDays(nextTimes);
+//                System.out.println((targetDate.toEpochDay() - recentDate.toEpochDay()));
+                Employee employee = null;
+                for (int i = 0; i < (targetDate.toEpochDay() - recentDate.toEpochDay()); i++) {
+                    DutyRecord nowDutyRecord = dutyRecordService.queryRecentByDepartmentId(departmentId);
+                    employee = employeeManager.getNextEmployeeByEmployeeId(departmentId, nowDutyRecord.getEmployeeId());
+                    DutyRecord nThDuty = dutyRecordManager.buildDutyRecord(employee, department, recentDate.plusDays(i + 1), "NORMAL");
+                    dutyRecordService.save(nThDuty);
                 }
+                EmployeeDto employeeDto = EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
+                employeeDto.setTopicName(topicName);
+                employeeDto.setRobotKey(robotKey);
+                return employeeDto;
+            } else {
+                Employee employee = employeeService.queryById(nThDutyRecord.getEmployeeId());
+                EmployeeDto employeeDto = EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
+                employeeDto.setTopicName(topicName);
+                employeeDto.setRobotKey(robotKey);
+                return employeeDto;
             }
-            //  查询该部门是否有需要补班的人, 优先选补班的人
-
-            //  查询该部门下这位值班员工的下一位员工
-            Employee employee = employeeService.queryNextById(departmentId, dutyRecord.getEmployeeId());
-            if (Objects.isNull(employee)) {
-                //  下一位人为空, 意味着要从头开始轮流值班,
-                employee = employeeService.queryFirstBydDepartmentId(departmentId);
-                return EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
-            }
-            return EmployeeMapStruct.MAPPER.toEmployeeDto(employee);
-        }
-    }
-
-    private void saveDutyRecord(EmployeeDto employeeDto, Integer count, Integer cycle) {
-        DutyRecord dutyRecord = new DutyRecord();
-        dutyRecord.setDepartmentId(employeeDto.getDepartmentId());
-        dutyRecord.setDepartmentName(departmentService.queryById(employeeDto.getDepartmentId()).getName());
-        dutyRecord.setEmployeeId(employeeDto.getId());
-        dutyRecord.setEmployeeName(employeeDto.getName());
-        LocalDate date = LocalDate.now().plusDays(count * cycle);
-        dutyRecord.setDutyDate(date);
-        dutyRecord.setStatus("NORMAL");
-        if (Objects.isNull(dutyRecordService.queryTodayOnDuty(employeeDto.getDepartmentId(), date))) {
-            dutyRecordService.save(dutyRecord);
         }
     }
 }

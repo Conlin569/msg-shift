@@ -39,5 +39,5 @@ public interface DutyRecordMapper extends BaseMapper<DutyRecord> {
 
     DutyRecord selectRecentByDepartmentId(Integer departmentId);
 
-    DutyRecord selectTodayOnDuty(@Param("departmentId") Integer departmentId, @Param("date") LocalDate date);
+    DutyRecord selectByDepartmentIdAndDate(@Param("departmentId") Integer departmentId, @Param("date") LocalDate date);
 }

@@ -35,7 +35,7 @@ public class Topic {
     /**
      * 部门id
      */
-    private Integer deptId;
+    private Integer departmentId;
 
     private Date tmCreate;
 

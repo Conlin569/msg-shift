@@ -152,11 +152,6 @@
                 <version>${apache.httpclient.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.frxs.auth</groupId>
-                <artifactId>auth-service-api</artifactId>
-                <version>${user-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.alibaba.otter</groupId>
                 <artifactId>shared.etl</artifactId>
                 <version>${otter.version}</version>
@@ -241,13 +236,6 @@
                 <version>${httpcore.version}</version>
             </dependency>
 
-
-            <dependency>
-                <groupId>com.frxs.msg.user</groupId>
-                <artifactId>msg-user-api</artifactId>
-                <version>${api.module.version}</version>
-            </dependency>
-
             <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -293,7 +281,7 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-client</artifactId>
-                <version>4.0.1</version>
+                <version>4.1.0</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.zookeeper</groupId>
@@ -304,7 +292,7 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
-                <version>4.0.1</version>
+                <version>4.1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>

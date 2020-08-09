@@ -7,7 +7,6 @@ package com.frxs.msg.shift.service;
 import com.frxs.msg.shift.dal.entity.DutyRecord;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +30,20 @@ public interface DutyRecordService {
      */
     void save(DutyRecord dutyRecord);
 
+    /**
+     * 查询该部门最近的一条值班记录
+     *
+     * @param departmentId
+     * @return
+     */
     DutyRecord queryRecentByDepartmentId(Integer departmentId);
 
-    DutyRecord queryTodayOnDuty(Integer departmentId, LocalDate date);
+    /**
+     * 查询指定日期的值班记录
+     *
+     * @param departmentId
+     * @param date
+     * @return
+     */
+    DutyRecord queryByDepartmentIdAndDate(Integer departmentId, LocalDate date);
 }

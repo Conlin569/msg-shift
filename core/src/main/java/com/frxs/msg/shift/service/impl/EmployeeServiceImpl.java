@@ -23,20 +23,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper employeeMapper;
 
     @Override
-    public Employee queryFirstBydDepartmentId(Integer departmentId) {
-        return employeeMapper.selectFirstByDepartmentId(departmentId);
-    }
-
-    @Override
-    public Employee queryNextById(Integer departmentId, Integer employeeId) {
-        Employee employee = employeeMapper.selectNextById(departmentId, employeeId);
-        if (Objects.isNull(employee)) {
-            employee = queryFirstBydDepartmentId(departmentId);
-        }
-        return employee;
-    }
-
-    @Override
     public Employee queryById(Integer id) {
         return employeeMapper.selectById(id);
     }

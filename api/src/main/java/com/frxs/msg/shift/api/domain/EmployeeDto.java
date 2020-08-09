@@ -39,4 +39,14 @@ public class EmployeeDto implements Serializable {
      * 员工状态
      */
     private String status;
+
+    /**
+     * templateName
+     */
+    private String topicName;
+
+    /**
+     * 机器人key
+     */
+    private String robotKey;
 }
