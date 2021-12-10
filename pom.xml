@@ -30,7 +30,7 @@
 
         <spring-boot.version>2.0.3.RELEASE</spring-boot.version>
         <!-- log4j 日志 -->
-        <log4j2.version>2.11.0</log4j2.version>
+        <log4j2.version>2.15.0</log4j2.version>
         <slf4j.version>1.7.25</slf4j.version>
         <!-- 三方框架 -->
         <fastjson.version>1.2.67</fastjson.version>
